@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-namespace CustomLinebreak;
+namespace LastEdit;
 
 use Laminas\Mvc\MvcEvent;
 use Laminas\EventManager\Event;
@@ -16,26 +16,15 @@ class Module extends AbstractModule
             'Omeka\Controller\Admin\Item',
             'view.show.after',
             [$this, 'add_formatting']
-            );
-
-        $sharedEventManager->attach(
-            'Omeka\Controller\Admin\Item',
-            'view.edit.after',
-            [$this, 'add_formatting']
-            );
-
-        $sharedEventManager->attach(
-            'Omeka\Controller\Admin\Item',
-            'view.browse.after',
-            [$this, 'add_formatting']
-            );
-        
-        
+            );       
     }
 
     public function add_formatting($event) {
         $view = $event->getTarget();
-        $view->headScript()->appendFile($view->assetUrl('title-formatting.js', 'CustomLinebreak'), 'text/javascript', ['defer' => 'defer']);
+        $item = $view->vars()->resource;
+        if ($item != null)
+            echo "<span style='font-size: 0.80em; background-color: gray; color:white; padding:5px; border-radius: 5px'>Last edit: " . $item->modified()->format('Y-m-d H:i:s') . "</span>";
+
     }
 
 }
